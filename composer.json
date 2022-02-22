@@ -1,0 +1,13 @@
+{
+    "name": "daw/mvc",
+    "authors": [
+        {
+            "name": "Antoni Moragues Font",
+            "email": "easyrobotics2@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "classmap": ["app/libraries"]
+    }
+}
