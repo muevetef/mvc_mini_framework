@@ -8,9 +8,9 @@ require_once 'config/config.php';
 // require_once 'libraries/Database.php';
 
 //Autoload Librerias del Core
-// spl_autoload_register(function($className){
-//     require_once 'libraries/'.$className. '.php';
-// });
+spl_autoload_register(function($className){
+    require_once 'libraries/'.$className. '.php';
+});
 
 //Composer autoload
-require_once "../vendor/autoload.php";
+//require_once "../vendor/autoload.php";
