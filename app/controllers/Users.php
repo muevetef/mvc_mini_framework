@@ -97,7 +97,7 @@ class Users extends Controller
 
     public function login(){
         if(isLoggedIn()){
-            redirect('/');
+            redirect('');
             exit();
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
