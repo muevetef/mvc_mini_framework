@@ -1,6 +1,16 @@
 <?php
 class Users extends Controller
 {
+    private $userModel;
+    public function __construct()
+    {
+        $this->userModel = $this->model('User');
+    }
+    public function index()
+    {
+        echo "Lista de usuarios por hacer...";
+    }
+
     public function register()
     {
         //Mirar si es POST
@@ -25,7 +35,9 @@ class Users extends Controller
                 $data['email_err'] = 'Por favor rellena el email';
             } else {
                 //TODO Veificar que no exista en la bd
-                $data['email_err'] = 'Este email la esta registrado';
+                if ($this->userModel->emailExists($data['email'])) {
+                    $data['email_err'] = 'Este email la esta registrado';
+                }
             }
 
             //Validar name
@@ -56,15 +68,19 @@ class Users extends Controller
                 && empty($data['confirm_password_err'])
             ) {
                 //Encriptar el password
-                
-                //Registrar el User
 
-            }else{
+                //Registrar el User
+                if ($this->userModel->register($data)) {
+                    //AUX Funcs...
+                    echo "Ususario regitrado correctamente...";
+                    //header('Location:'. URLROOT . '/users/login');
+                } else {
+                    die("Algo ha ido mal");
+                }
+            } else {
                 //Si hay errores cargamos la vista con los errores
                 $this->view('users/register', $data);
-
             }
-
         } else {
             //Inicializar los datos
             $data = [
