@@ -2,6 +2,9 @@
 
 //Cargar la configuracion
 require_once 'config/config.php';
+//Cargar Helper functions
+require_once 'helpers/url_helper.php';
+require_once 'helpers/session_helper.php';
 //Cargar librerias
 // require_once 'libraries/Core.php';
 // require_once 'libraries/Controller.php';

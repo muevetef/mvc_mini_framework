@@ -67,13 +67,9 @@ class Users extends Controller
                 && empty($data['password_err'])
                 && empty($data['confirm_password_err'])
             ) {
-                //Encriptar el password
-
                 //Registrar el User
                 if ($this->userModel->register($data)) {
-                    //AUX Funcs...
-                    echo "Ususario regitrado correctamente...";
-                    //header('Location:'. URLROOT . '/users/login');
+                    redirect('users/login');
                 } else {
                     die("Algo ha ido mal");
                 }
@@ -97,5 +93,90 @@ class Users extends Controller
             //Cargar la vista
             $this->view('users/register', $data);
         }
+    }
+
+    public function login(){
+        if(isLoggedIn()){
+            redirect('/');
+            exit();
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            //Sanitizar los datos
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            //Inicializar los datos
+            $data = [
+                'email' => trim($_POST['email']),
+                'password' => trim($_POST['password']),
+                'email_err' => '',
+                'password_err' => ''
+            ];
+
+            if (empty($data['email'])) {
+                $data['email_err'] = 'Escribe un email';
+            }
+
+            if (empty($data['password'])) {
+                $data['password_err'] = 'Escribe un password';
+            }
+
+
+            //Si hay errores se los pasamos a la vista
+            if(empty($data['email_err']) && empty($data['password_err'])){
+                //Mirar si existe el email
+                if($this->userModel->emailExists($data['email'])){
+                    //Si existe mirar que el password coincida
+                    $loggedInUSer = $this->userModel->checkUser($data['email'], $data['password']);
+                    
+                    if($loggedInUSer){
+                        //Si el password es correcto iniciamos session
+                        $this->createUserSession($loggedInUSer);
+                        redirect('/');
+                    }else{
+                        //Si el password no es correcto devolvemos el error al usuario
+                        $data['password_err'] = "Contrasseña incorrecta";
+                        $this->view('users/login', $data);
+                    }
+                    
+                }else{
+                    //Si no existe el email devolvemos el error al usuario
+                    $data['email_err'] = "El usuario no existe";
+                    $this->view('users/login', $data);
+                }
+               
+
+                
+
+            }else{
+                //Cargar la vista con los errores
+                $this->view('users/login', $data);
+            }
+
+        } else {
+            // Init data 
+            $data = [
+                'email' => '',
+                'password' => '',
+                'email_err' => '',
+                'password_err' => ''
+            ];
+            //Cargamos la vista
+            $this->view('users/login', $data);
+        }
+    }
+
+    public function createUserSession($user){
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['user_email'] = $user->email;
+        $_SESSION['user_name'] = $user->name;
+    }
+
+    public function logout(){
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_email']);
+        unset($_SESSION['user_name']);
+        // session_unset();
+        session_destroy();
+        redirect('users/login');
     }
 }
