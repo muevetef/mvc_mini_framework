@@ -96,10 +96,7 @@ class Users extends Controller
     }
 
     public function login(){
-        if(isLoggedIn()){
-            redirect('');
-            exit();
-        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             //Sanitizar los datos
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -131,7 +128,8 @@ class Users extends Controller
                     if($loggedInUSer){
                         //Si el password es correcto iniciamos session
                         $this->createUserSession($loggedInUSer);
-                        redirect('/');
+                        redirect('posts');
+                       
                     }else{
                         //Si el password no es correcto devolvemos el error al usuario
                         $data['password_err'] = "Contrasseña incorrecta";
@@ -169,6 +167,7 @@ class Users extends Controller
         $_SESSION['user_id'] = $user->id;
         $_SESSION['user_email'] = $user->email;
         $_SESSION['user_name'] = $user->name;
+        
     }
 
     public function logout(){
