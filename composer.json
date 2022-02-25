@@ -6,7 +6,9 @@
             "email": "easyrobotics2@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "phpmailer/phpmailer": "^6.5"
+    },
     "autoload": {
         "classmap": ["app/libraries"]
     }
